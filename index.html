@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario 1° Semestre · Pumahue Peñalolén</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0b1d3a;
+  --orange:#e8600a;
+  --cream:#faf7f2;
+  --white:#fff;
+  --border:#e5ddd2;
+  --muted:#78716c;
+  --text:#1c1917;
+
+  --feriado:#dc2626;
+  --reunion:#1d4ed8;
+  --deporte:#15803d;
+  --campur:#7c3aed;
+  --jeans:#be185d;
+  --simulacro:#d97706;
+  --general:#475569;
+  --tarea:#0891b2;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{
+  background:var(--navy);
+  padding:44px 20px 36px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 100% at 85% 0%,rgba(232,96,10,.2) 0%,transparent 55%);
+  pointer-events:none;
+}
+.eyebrow{
+  display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--orange);background:rgba(232,96,10,.12);border:1px solid rgba(232,96,10,.3);
+  padding:4px 14px;border-radius:99px;margin-bottom:16px;position:relative;
+}
+h1{
+  font-family:'Fraunces',serif;font-size:clamp(28px,6vw,50px);font-weight:900;
+  color:#fff;line-height:1.1;margin-bottom:8px;position:relative;
+}
+h1 em{font-style:normal;color:var(--orange)}
+.subtitle{color:rgba(255,255,255,.5);font-size:13.5px;position:relative}
+
+/* FILTER BAR */
+.filter-bar{
+  background:var(--navy);border-bottom:2px solid rgba(232,96,10,.3);
+  padding:12px 16px;
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+  position:sticky;top:0;z-index:100;
+}
+.filter-btn{
+  display:flex;align-items:center;gap:6px;
+  font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;
+  padding:5px 13px;border-radius:99px;cursor:pointer;
+  border:2px solid transparent;
+  transition:all .18s;
+  color:#fff;
+  opacity:.45;
+}
+.filter-btn .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.filter-btn.active{opacity:1;border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.1)}
+.filter-btn:hover{opacity:.85}
+
+/* MONTH NAV */
+.month-nav{
+  display:flex;justify-content:center;gap:6px;flex-wrap:wrap;
+  padding:24px 16px 0;max-width:900px;margin:0 auto;
+}
+.mnav-btn{
+  font-family:'Fraunces',serif;font-size:13px;font-weight:800;
+  padding:8px 18px;border-radius:99px;cursor:pointer;
+  border:2px solid var(--border);background:var(--white);color:var(--muted);
+  transition:all .18s;
+}
+.mnav-btn:hover{border-color:var(--navy);color:var(--navy)}
+.mnav-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* MAIN */
+main{max-width:900px;margin:0 auto;padding:0 16px 80px}
+
+/* MONTH SECTION */
+.month-sec{padding-top:40px}
+.month-title{
+  display:flex;align-items:baseline;gap:12px;margin-bottom:6px;
+}
+.month-title h2{
+  font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--navy);
+}
+.month-theme{
+  font-size:11px;font-weight:600;color:var(--orange);
+  background:rgba(232,96,10,.07);border:1px solid rgba(232,96,10,.18);
+  padding:3px 10px;border-radius:99px;white-space:nowrap;
+}
+
+/* CALENDAR GRID */
+.cal-grid{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:4px;
+}
+.cal-header{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  background:var(--navy);
+}
+.cal-header div{
+  text-align:center;padding:9px 4px;
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);
+}
+.cal-header div:nth-child(1),
+.cal-header div:nth-child(7){color:rgba(255,100,80,.6)}
+
+.cal-body{
+  display:grid;grid-template-columns:repeat(7,1fr);
+}
+.cal-cell{
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  min-height:80px;
+  padding:6px 5px 5px;
+  position:relative;
+  transition:background .15s;
+}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell.empty{background:rgba(0,0,0,.015)}
+.cal-cell.today{background:rgba(232,96,10,.04)}
+.cal-cell.weekend .day-num{color:rgba(220,38,38,.6)}
+.cal-cell.has-event:hover{background:#f9f5ef;cursor:pointer}
+
+.day-num{
+  font-size:11.5px;font-weight:700;color:#aaa;
+  display:block;margin-bottom:4px;
+}
+.cal-cell.has-event .day-num{color:var(--navy)}
+
+/* EVENT PILLS */
+.pill{
+  display:block;
+  font-size:9.5px;font-weight:700;
+  padding:2px 6px;border-radius:5px;
+  color:#fff;margin-bottom:2px;
+  line-height:1.35;
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.pill:hover{opacity:.85}
+.pill.feriado  {background:var(--feriado)}
+.pill.reunion  {background:var(--reunion)}
+.pill.deporte  {background:var(--deporte)}
+.pill.campur   {background:var(--campur)}
+.pill.jeans    {background:var(--jeans)}
+.pill.simulacro{background:var(--simulacro)}
+.pill.tarea    {background:var(--tarea)}
+
+.pill.hidden{display:none}
+
+/* VACACIONES BANNER */
+.vac-banner{
+  background:linear-gradient(135deg,var(--navy) 0%,#1a3564 100%);
+  border-radius:14px;padding:22px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-top:12px;flex-wrap:wrap;
+}
+.vac-text .label{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:3px}
+.vac-text .title{font-family:'Fraunces',serif;font-size:20px;font-weight:800;color:#fff}
+.vac-text .sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:3px}
+.gcal-vac{
+  display:inline-flex;align-items:center;gap:7px;
+  margin-top:10px;padding:8px 16px;border-radius:9px;
+  background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.22);
+  color:#fff;font-size:12px;font-weight:600;text-decoration:none;
+  transition:background .18s;
+}
+.gcal-vac:hover{background:rgba(255,255,255,.2)}
+.vac-emoji{font-size:38px}
+
+/* TOOLTIP / MODAL */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.overlay.show{opacity:1;pointer-events:all}
+.modal{
+  background:#fff;border-radius:20px;padding:28px 28px 24px;
+  max-width:420px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+  transform:translateY(12px);transition:transform .2s;
+  position:relative;
+}
+.overlay.show .modal{transform:translateY(0)}
+.modal-tag{
+  display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 10px;border-radius:99px;color:#fff;margin-bottom:12px;
+}
+.modal h3{font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2}
+.modal .modal-date{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px}
+.modal .modal-detail{font-size:13.5px;color:var(--text);line-height:1.6;margin-bottom:16px}
+.modal-gcal{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:10px;
+  background:var(--navy);color:#fff;
+  font-size:13px;font-weight:600;text-decoration:none;
+  transition:background .18s;
+}
+.modal-gcal:hover{background:#1a3564}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:none;border:none;font-size:22px;cursor:pointer;
+  color:#aaa;line-height:1;
+}
+.modal-close:hover{color:var(--text)}
+
+/* LINK inside modal */
+.modal a.inline-link{color:var(--orange);font-weight:600}
+
+/* FOOTER */
+footer{
+  background:var(--navy);color:rgba(255,255,255,.4);
+  text-align:center;padding:24px;font-size:12.5px;line-height:1.8;
+}
+footer strong{color:rgba(255,255,255,.7)}
+
+/* AVISO CARD */
+.aviso-card{
+  background:#fff;border:2px solid var(--tarea);
+  border-radius:16px;padding:24px 24px 20px;margin-top:12px;
+  position:relative;overflow:hidden;
+}
+.aviso-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:var(--tarea);
+}
+.aviso-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
+.aviso-icon{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(8,145,178,.1);
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.aviso-header h3{
+  font-family:'Fraunces',serif;font-size:18px;font-weight:800;color:var(--navy);line-height:1.2;
+}
+.aviso-header .aviso-sub{font-size:11.5px;color:var(--tarea);font-weight:600}
+.aviso-body{font-size:13.5px;line-height:1.65;color:var(--text);}
+.aviso-body strong{color:var(--navy)}
+.aviso-body .highlight{
+  background:rgba(8,145,178,.07);border-left:3px solid var(--tarea);
+  padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px;
+}
+.aviso-body .example{
+  background:#f8f7f4;border-radius:10px;padding:12px 14px;
+  margin:12px 0;font-size:12.5px;color:var(--muted);font-style:italic;
+}
+.aviso-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--border);
+}
+.aviso-from{font-size:12px;color:var(--muted);font-weight:500}
+.aviso-deadline{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--tarea);color:#fff;
+  font-size:12px;font-weight:700;padding:6px 14px;border-radius:99px;
+}
+
+/* BACK TO TOP */
+.back-top{
+  position:fixed;bottom:24px;right:20px;z-index:200;
+  display:flex;align-items:center;gap:7px;
+  background:var(--navy);color:#fff;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:700;
+  padding:9px 16px;border-radius:99px;
+  border:none;cursor:pointer;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
+  opacity:0;pointer-events:none;
+  transform:translateY(10px);
+  transition:opacity .22s, transform .22s;
+  text-decoration:none;
+}
+.back-top.visible{opacity:1;pointer-events:all;transform:translateY(0)}
+.back-top:hover{background:#1a3564}
+.back-top svg{width:14px;height:14px;flex-shrink:0}
+
+@media(max-width:600px){
+  .cal-cell{min-height:58px;padding:4px 3px}
+  .pill{font-size:8.5px;padding:2px 4px}
+  .month-theme{display:none}
+  .day-num{font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="eyebrow">Apoderados 2025</div>
+  <h1>Calendario <em>1° Semestre</em></h1>
+  <p class="subtitle">Colegio Pumahue de Peñalolén</p>
+</header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-cat="all">
+    <span class="dot" style="background:#94a3b8"></span> Todos
+  </button>
+  <button class="filter-btn active" data-cat="feriado">
+    <span class="dot" style="background:var(--feriado)"></span> Feriado
+  </button>
+  <button class="filter-btn active" data-cat="reunion">
+    <span class="dot" style="background:var(--reunion)"></span> Reunión
+  </button>
+  <button class="filter-btn active" data-cat="deporte">
+    <span class="dot" style="background:var(--deporte)"></span> Deportes
+  </button>
+  <button class="filter-btn active" data-cat="campur">
+    <span class="dot" style="background:var(--campur)"></span> CAMPUR
+  </button>
+  <button class="filter-btn active" data-cat="jeans">
+    <span class="dot" style="background:var(--jeans)"></span> Jeans Day
+  </button>
+  <button class="filter-btn active" data-cat="simulacro">
+    <span class="dot" style="background:var(--simulacro)"></span> Simulacro
+  </button>
+  <button class="filter-btn active" data-cat="general">
+    <span class="dot" style="background:var(--general)"></span> General
+  </button>
+  <button class="filter-btn active" data-cat="tarea">
+    <span class="dot" style="background:var(--tarea)"></span> Tareas
+  </button>
+</div>
+
+<main>
+
+<!-- MONTH NAV -->
+<div class="month-nav">
+  <button class="mnav-btn active" data-month="3">Marzo</button>
+  <button class="mnav-btn" data-month="4">Abril</button>
+  <button class="mnav-btn" data-month="5">Mayo</button>
+  <button class="mnav-btn" data-month="6">Junio</button>
+  <button class="mnav-btn" data-month="7">Julio</button>
+</div>
+
+<!-- MONTH SECTIONS (generated by JS) -->
+<div id="calendar-container"></div>
+
+</main>
+
+<footer>
+  <strong>Colegio Pumahue de Peñalolén</strong> · Calendario 1° Semestre 2025<br>
+  Las fechas pueden estar sujetas a cambios. Revisa siempre las comunicaciones oficiales del colegio.
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tag" id="modal-tag"></div>
+    <div class="modal-date" id="modal-date"></div>
+    <h3 id="modal-title"></h3>
+    <div class="modal-detail" id="modal-detail"></div>
+    <a class="modal-gcal" id="modal-gcal" href="#" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2" stroke="white" stroke-width="1.8"/><path d="M3 9h18" stroke="white" stroke-width="1.8"/><path d="M8 2v3M16 2v3" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Agregar al calendario
+    </a>
+  </div>
+</div>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  Volver al inicio
+</button>
+
+<script>
+// ════════════════════════════
+// DATA
+// ════════════════════════════
+const EVENTS = [
+  // MARZO
+  {y:2025,m:3,d:2, title:"Inicio de clases — Jornada Comunidad de Curso", cat:"general", detail:"Ensayo PAES Lenguaje para 3° y 4° medio.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Inicio+de+clases+%E2%80%93+Pumahue&dates=20250302/20250302&details=Jornada+Comunidad+de+Curso.+Ensayo+PAES+Lenguaje.&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:3, title:"Diagnóstico Velocidad Lectora (1°–6° básico)", cat:"general", detail:"Actividad Joiners para apoderados nuevos · 18:00 hrs.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Joiners+apoderados+nuevos+%E2%80%93+Pumahue&dates=20250303T180000/20250303T190000&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:9, title:"Charla Feria Barcelona BIYSC (Teams)", cat:"general", detail:"Para apoderados y estudiantes II° a IV° medio · 19:00 hrs. Postulaciones hasta el 20 de marzo en <a href='https://biysc.org/applynow' target='_blank' class='inline-link'>biysc.org/applynow</a>", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Charla+Feria+BIYSC+%E2%80%93+Pumahue&dates=20250309T190000/20250309T200000&details=Charla+por+Teams.+Postulaciones%3A+https%3A%2F%2Fbiysc.org%2Fapplynow&location=Online+Teams"},
+  {y:2025,m:3,d:13,title:"Simulacro de Evacuación", cat:"simulacro", detail:"Simulacro de evacuación escolar.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Simulacro+de+Evacuaci%C3%B3n+%E2%80%93+Pumahue&dates=20250313/20250313&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:14,title:"Feria de las Pulgas", cat:"campur", detail:"10:00 a 12:45 hrs. en el Gimnasio del colegio. A cargo del CAMPUR General de Padres.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Feria+de+las+Pulgas+%E2%80%93+Pumahue&dates=20250315T100000/20250315T124500&location=Gimnasio+Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:17,title:"Charla Programa Bilingüe 8° básico", cat:"general", detail:"8:30 hrs. Presencial · Miss Carolina Bergamasco, Directora del programa.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Charla+Programa+Biling%C3%BCe+8%C2%B0+%E2%80%93+Pumahue&dates=20250317T083000/20250317T093000&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:20,title:"🔔 Ceremonia Toque de Campana — 1° Básicos", cat:"general", detail:"Se enviará invitación a las familias.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Ceremonia+Toque+de+Campana+1%C2%B0+b%C3%A1sicos+%E2%80%93+Pumahue&dates=20250320/20250320&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:24,title:"1ª Reunión Apoderados — Parvularia", cat:"reunion", detail:"19:00 a 20:00 hrs.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=1%C2%AA+Reuni%C3%B3n+Apoderados+Parvularia+%E2%80%93+Pumahue&dates=20250324T190000/20250324T200000&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:25,title:"1ª Reunión Apoderados — Básica", cat:"reunion", detail:"19:00 a 20:00 hrs.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=1%C2%AA+Reuni%C3%B3n+Apoderados+B%C3%A1sica+%E2%80%93+Pumahue&dates=20250325T190000/20250325T200000&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:26,title:"1ª Reunión Apoderados — Media", cat:"reunion", detail:"19:00 a 20:00 hrs.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=1%C2%AA+Reuni%C3%B3n+Apoderados+Media+%E2%80%93+Pumahue&dates=20250326T190000/20250326T200000&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:27,title:"Jeans Day — CAMPUR Alumnos", cat:"jeans", detail:"A cargo del CAMPUR General de Alumnos.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Jeans+Day+%E2%80%93+Pumahue&dates=20250327/20250327&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+  {y:2025,m:3,d:30,title:"🎓 Inicio Talleres y Academias", cat:"general", detail:"Inicio oficial de talleres y academias extracurriculares.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Inicio+Talleres+y+Academias+%E2%80%93+Pumahue&dates=20250330/20250330&location=Colegio+Pumahue+Pe%C3%B1alol%C3%A9n"},
+
+  // ABRIL
+  {y:2025,m:4,d:2, title:"Jornada de Reflexión — Salida anticipada", cat:"general", detail:"Básica 12:25 · Parvularia 12:50 · Media 13:10 hrs.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Jornada+Reflexi%C3%B3n+%E2%80%93+Pumahue&dates=20250402/20250402&details=Salida+anticipada%3A+B%C3%A1sica+12%3A25+%2F+Parvularia+12%3A50+%2F+Media+13%3A10+hrs."},
+  {y:2025,m:4,d:3, title:"Feriado — Viernes Santo", cat:"feriado", detail:"Colegio cerrado.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Feriado+Viernes+Santo&dates=20250403/20250405"},
+  {y:2025,m:4,d:4, title:"Feriado — Sábado Santo", cat:"feriado", detail:"Colegio cerrado.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Feriado+S%C3%A1bado+Santo&dates=20250404/20250405"},
+  {y:2025,m:4,d:6, title:"CAMPUR de Curso — Pascua 🐣", cat:"campur", detail:"Cada alumno trae una bolsa con 5 huevitos de chocolate medianos. Respetar la indicación para que todos reciban lo mismo. · Encuesta Joiners para apoderados nuevos (ingreso 2026).", gcal:"https://calendar.google.com/calendar/r/eventedit?text=CAMPUR+Pascua+%E2%80%93+Pumahue&dates=20250407/20250407&details=5+huevitos+de+chocolate+medianos+por+alumno."},
+  {y:2025,m:4,d:9, title:"📹 Fecha límite: Video DLI — Kínder", cat:"tarea", detail:"Subir el video 'Soy experto/a en...' al equipo Teams <strong>Kinder A 2026</strong>, sección Tareas → <em>\"Video DLI\"</em>, antes de las 23:59 hrs.<br><br>El video debe ser de <strong>máximo 1 minuto</strong> y mostrar en qué es experto/a tu hijo/a y qué tiene potencial de aprender.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=%F0%9F%93%B9+Fecha+l%C3%ADmite+Video+DLI+%E2%80%93+K%C3%ADnder+Pumahue&dates=20250409/20250409&details=Subir+el+video+al+equipo+Teams+Kinder+A+2026%2C+secci%C3%B3n+Tareas+%22Video+DLI%22.+M%C3%A1ximo+1+minuto.&location=Teams+Kinder+A+2026"},
+  {y:2025,m:4,d:13,title:"Inicio Programa Liderazgo y Emprendimiento", cat:"general", detail:"Liderazgo II Medio · Emprendimiento III Medio. El docente informará horario y sala. Test Vocacional Edumetrics (8°, II y IV medio) semana 13–17 de abril.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Inicio+Liderazgo+y+Emprendimiento+%E2%80%93+Pumahue&dates=20250413/20250413"},
+  {y:2025,m:4,d:17,title:"Jeans Day — IV Medio", cat:"jeans", detail:"A cargo de IV Medio.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Jeans+Day+IV+Medio+%E2%80%93+Pumahue&dates=20250417/20250417"},
+  {y:2025,m:4,d:18,title:"Relampagol Femenino", cat:"deporte", detail:"A cargo de Pumahuinas.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Relampagol+Femenino+%E2%80%93+Pumahue&dates=20250419/20250419"},
+  {y:2025,m:4,d:20,title:"Semana Convivencia Escolar", cat:"general", detail:"Actividades durante recreos y consejo de curso durante la semana.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Semana+Convivencia+Escolar+%E2%80%93+Pumahue&dates=20250421/20250425"},
+  {y:2025,m:4,d:24,title:"📚 Día del Libro", cat:"general", detail:"Estudiantes pueden venir disfrazados de personaje de cuento o libro, según indicación del departamento de Lenguaje.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=D%C3%ADa+del+Libro+%E2%80%93+Pumahue&dates=20250424/20250424"},
+  {y:2025,m:4,d:25,title:"Copa Pumahue", cat:"deporte", detail:"Participan colegios de la comuna y de la red. A cargo del prof. Ricardo Mardones.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Copa+Pumahue&dates=20250426/20250426"},
+  {y:2025,m:4,d:28,title:"Feria de la Convivencia Escolar", cat:"general", detail:"Durante la jornada escolar.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Feria+Convivencia+Escolar+%E2%80%93+Pumahue&dates=20250428/20250428"},
+  {y:2025,m:4,d:29,title:"🏆 Certificación de Inglés (BAL)", cat:"general", detail:"Ceremonia a cargo de miss Paz Aldea. Se enviará información a las familias.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Ceremonia+Certificaci%C3%B3n+Ingl%C3%A9s+BAL+%E2%80%93+Pumahue&dates=20250429/20250429"},
+
+  // MAYO
+  {y:2025,m:5,d:1, title:"Feriado — Día del Trabajo", cat:"feriado", detail:"Colegio cerrado.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Feriado+D%C3%ADa+del+Trabajo&dates=20250501/20250501"},
+  {y:2025,m:5,d:8, title:"🎉 Día del Estudiante — Jeans Day gratuito", cat:"jeans", detail:"Convivencias saludables y actividades recreativas. Programación por ciclo.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=D%C3%ADa+del+Estudiante+Jeans+Day+%E2%80%93+Pumahue&dates=20250508/20250508"},
+  {y:2025,m:5,d:9, title:"Relampagol Masculino", cat:"deporte", detail:"A cargo del prof. Eric Córdova y Camilo Vega.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Relampagol+Masculino+%E2%80%93+Pumahue&dates=20250509/20250509"},
+  {y:2025,m:5,d:15,title:"Jeans Day — CAMPUR Estudiantes", cat:"jeans", detail:"A cargo del CAMPUR de Estudiantes.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Jeans+Day+CAMPUR+Estudiantes+%E2%80%93+Pumahue&dates=20250515/20250515"},
+  {y:2025,m:5,d:16,title:"Kermesse", cat:"campur", detail:"A cargo del CAMPUR General de Padres.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Kermesse+%E2%80%93+Pumahue&dates=20250517/20250517"},
+  {y:2025,m:5,d:19,title:"Simulacro de Evacuación", cat:"simulacro", detail:"Simulacro de evacuación escolar.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Simulacro+Evacuaci%C3%B3n+%E2%80%93+Pumahue&dates=20250520/20250520"},
+  {y:2025,m:5,d:21,title:"Feriado — Glorias Navales", cat:"feriado", detail:"Colegio cerrado.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Feriado+Glorias+Navales&dates=20250521/20250521"},
+  {y:2025,m:5,d:22,title:"Feriado — Interferiado", cat:"feriado", detail:"Colegio cerrado.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Interferiado+%E2%80%93+Colegio+cerrado&dates=20250522/20250522"},
+  {y:2025,m:5,d:30,title:"Impacto Kids", cat:"deporte", detail:"Participan colegios de la comuna. A cargo del prof. Ricardo Mardones.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Impacto+Kids+%E2%80%93+Pumahue&dates=20250531/20250531"},
+
+  // JUNIO
+  {y:2025,m:6,d:1, title:"Inicio Inscripción PAES", cat:"general", detail:"Período: 1 de junio al 22 de julio.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Inscripci%C3%B3n+PAES+%E2%80%93+Pumahue&dates=20250601/20250722"},
+  {y:2025,m:6,d:5, title:"Jeans Day — 8° Básico Bilingüe", cat:"jeans", detail:"A cargo de 8° básicos bilingües.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Jeans+Day+8%C2%B0+Biling%C3%BCe+%E2%80%93+Pumahue&dates=20250605/20250605"},
+  {y:2025,m:6,d:12,title:"Término Talleres y Academias", cat:"general", detail:"Último día de talleres y academias.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=T%C3%A9rmino+Talleres+y+Academias+%E2%80%93+Pumahue&dates=20250612/20250612"},
+  {y:2025,m:6,d:16,title:"Entrevistas Semestrales (16–18 jun)", cat:"reunion", detail:"Salida anticipada y entrevistas presenciales apoderado–estudiante. Básica 12:25 · Parvularia 12:50 · Media 13:10 hrs.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Entrevistas+Semestrales+%E2%80%93+Pumahue&dates=20250616/20250619&details=Salida+anticipada%3A+B%C3%A1sica+12%3A25+%2F+Parvularia+12%3A50+%2F+Media+13%3A10+hrs."},
+  {y:2025,m:6,d:18,title:"📅 Último día de clases — 1° Semestre", cat:"general", detail:"Último día de clases. Entrevistas semestrales presenciales.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=%C3%9Altimo+d%C3%ADa+1%C2%B0+Semestre+%E2%80%93+Pumahue&dates=20250618/20250618"},
+
+  // JULIO
+  {y:2025,m:7,d:6, title:"🎒 Inicio del 2° Semestre", cat:"general", detail:"Vuelta a clases luego de vacaciones de invierno.", gcal:"https://calendar.google.com/calendar/r/eventedit?text=Inicio+2%C2%B0+Semestre+%E2%80%93+Pumahue+Pe%C3%B1alol%C3%A9n&dates=20250707/20250707"},
+];
+
+const MONTHS = [
+  {m:3, name:"Marzo",  theme:"BE WELL: Sueño reparador y adecuado"},
+  {m:4, name:"Abril",  theme:"BE WELL: Dieta y nutrición sostenible"},
+  {m:5, name:"Mayo",   theme:"BE WELL: Mes de la seguridad escolar"},
+  {m:6, name:"Junio",  theme:"BE WELL: Conexión con uno mismo y otros"},
+  {m:7, name:"Julio",  theme:"BE WELL: Hacer cosas que nos gustan"},
+];
+
+const DAY_NAMES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const MONTH_NAMES = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const CAT_LABELS = {
+  feriado:'Feriado', reunion:'Reunión', deporte:'Deportes',
+  campur:'CAMPUR', jeans:'Jeans Day', simulacro:'Simulacro', general:'General', tarea:'Tarea'
+};
+
+// ── ACTIVE FILTERS ──
+let activeFilters = new Set(['feriado','reunion','deporte','campur','jeans','simulacro','general','tarea']);
+
+// ── BUILD CALENDARS ──
+function buildCalendars() {
+  const container = document.getElementById('calendar-container');
+  container.innerHTML = '';
+
+  MONTHS.forEach(mo => {
+    const sec = document.createElement('section');
+    sec.className = 'month-sec';
+    sec.id = 'month-' + mo.m;
+
+    // Header
+    sec.innerHTML = `
+      <div class="month-title">
+        <h2>${mo.name}</h2>
+        <span class="month-theme">✦ ${mo.theme}</span>
+      </div>
+    `;
+
+    // Grid
+    const grid = document.createElement('div');
+    grid.className = 'cal-grid';
+
+    // Day name header
+    const hdr = document.createElement('div');
+    hdr.className = 'cal-header';
+    DAY_NAMES.forEach(d => { hdr.innerHTML += `<div>${d}</div>`; });
+    grid.appendChild(hdr);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'cal-body';
+
+    const firstDay = new Date(2025, mo.m - 1, 1).getDay(); // 0=Sun
+    const daysInMonth = new Date(2025, mo.m, 0).getDate();
+    const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+
+    for (let i = 0; i < totalCells; i++) {
+      const cell = document.createElement('div');
+      const dayNum = i - firstDay + 1;
+      const isWeekend = (i % 7 === 0 || i % 7 === 6);
+
+      if (dayNum < 1 || dayNum > daysInMonth) {
+        cell.className = 'cal-cell empty';
+        if (isWeekend) cell.classList.add('weekend');
+        body.appendChild(cell);
+        continue;
+      }
+
+      const dayEvents = EVENTS.filter(e => e.y === 2025 && e.m === mo.m && e.d === dayNum);
+      cell.className = 'cal-cell' + (isWeekend ? ' weekend' : '') + (dayEvents.length ? ' has-event' : '');
+      cell.innerHTML = `<span class="day-num">${dayNum}</span>`;
+
+      dayEvents.forEach(ev => {
+        const pill = document.createElement('span');
+        pill.className = `pill ${ev.cat}`;
+        pill.textContent = shorten(ev.title);
+        pill.dataset.idx = EVENTS.indexOf(ev);
+        pill.onclick = (e) => { e.stopPropagation(); openModal(ev); };
+        cell.appendChild(pill);
+      });
+
+      if (dayEvents.length) {
+        cell.onclick = () => { if(dayEvents.length === 1) openModal(dayEvents[0]); };
+      }
+
+      body.appendChild(cell);
+    }
+
+    grid.appendChild(body);
+    sec.appendChild(grid);
+
+    // Special: Aviso PDLI for Abril
+    if (mo.m === 4) {
+      const aviso = document.createElement('div');
+      aviso.className = 'aviso-card';
+      aviso.innerHTML = `
+        <div class="aviso-header">
+          <div class="aviso-icon">📹</div>
+          <div>
+            <div class="aviso-sub">TAREA — Kínder A · Misses de Kínder</div>
+            <h3>Sesión PDLI: Soy experto/a en…</h3>
+          </div>
+        </div>
+        <div class="aviso-body">
+          <p>En la próxima sesión de <strong>PDLI</strong> trabajaremos con sus hijos la idea de que son <strong>expertos en cosas que han aprendido a hacer muy bien</strong>, y que tienen <strong>potencial para aprender cosas nuevas</strong>.</p>
+
+          <div class="highlight">
+            <strong>¿Qué deben hacer?</strong><br>
+            Ayúdenle a identificar <strong>en qué es experto/a</strong> (qué sabe hacer muy bien) y cuál es su <strong>potencial</strong> (qué podría aprender acorde a sus intereses y habilidades). Pueden apoyarse en las cualidades, preferencias, habilidades y desafíos trabajados en la primera sesión.<br><br>
+            <em>Importante: deben ser actividades de la infancia, no carreras ni ocupaciones futuras.</em>
+          </div>
+
+          <p>Luego, graben un <strong>video de máximo 1 minuto</strong> mostrando ambas cosas.</p>
+
+          <div class="example">
+            💡 Ejemplo: "Soy experta/o jugando fútbol, y tengo el potencial para aprender a jugar básquetbol" → el video muestra al niño/a metiendo un gol y luego practicando con una pelota de básquetbol.
+          </div>
+
+          <p>Subir el video al equipo <strong>Teams → Kinder A 2026 → Tareas → "Video DLI"</strong></p>
+        </div>
+        <div class="aviso-footer">
+          <span class="aviso-from">Con el afecto de siempre, Misses de Kínder 💛</span>
+          <span class="aviso-deadline">📅 Plazo: jueves 9 de abril</span>
+        </div>
+      `;
+      sec.appendChild(aviso);
+    }
+
+    // Special: Vacaciones banner after Junio
+    if (mo.m === 6) {
+      sec.innerHTML += `
+        <div class="vac-banner">
+          <div class="vac-text">
+            <div class="label">🏖️ Vacaciones de invierno</div>
+            <div class="title">22 de junio — 3 de julio</div>
+            <div class="sub">Regreso: lunes 6 de julio (inicio 2° semestre)</div>
+            <a class="gcal-vac" href="https://calendar.google.com/calendar/r/eventedit?text=%F0%9F%8F%96%EF%B8%8F+Vacaciones+de+Invierno+%E2%80%93+Pumahue&dates=20250622/20250704&details=Regreso+el+lunes+6+de+julio." target="_blank">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2" stroke="white" stroke-width="2"/><path d="M3 9h18M8 2v3M16 2v3" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+              Agregar vacaciones al calendario
+            </a>
+          </div>
+          <div class="vac-emoji">🏖️</div>
+        </div>
+      `;
+    }
+
+    container.appendChild(sec);
+  });
+
+  applyFilters();
+}
+
+function shorten(title) {
+  // Remove emoji prefix for pill space
+  const clean = title.replace(/^[\u{1F300}-\u{1FAFF}🏖️🎒📅🔔🎓🎉🏆📚🐣\s]+/u, '').trim();
+  return clean.length > 26 ? clean.slice(0, 24) + '…' : clean;
+}
+
+// ── FILTERS ──
+document.getElementById('filterBar').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  const cat = btn.dataset.cat;
+
+  if (cat === 'all') {
+    const allActive = activeFilters.size === 8;
+    if (allActive) {
+      activeFilters.clear();
+    } else {
+      activeFilters = new Set(['feriado','reunion','deporte','campur','jeans','simulacro','general','tarea']);
+    }
+  } else {
+    if (activeFilters.has(cat)) activeFilters.delete(cat);
+    else activeFilters.add(cat);
+  }
+
+  updateFilterUI();
+  applyFilters();
+});
+
+function updateFilterUI() {
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    const cat = btn.dataset.cat;
+    if (cat === 'all') {
+      btn.classList.toggle('active', activeFilters.size === 8);
+    } else {
+      btn.classList.toggle('active', activeFilters.has(cat));
+    }
+  });
+}
+
+function applyFilters() {
+  document.querySelectorAll('.pill').forEach(pill => {
+    const cat = [...pill.classList].find(c => c !== 'pill' && c !== 'hidden');
+    pill.classList.toggle('hidden', !activeFilters.has(cat));
+  });
+  // Update has-event class
+  document.querySelectorAll('.cal-cell:not(.empty)').forEach(cell => {
+    const visible = cell.querySelectorAll('.pill:not(.hidden)').length > 0;
+    cell.classList.toggle('has-event', visible);
+  });
+}
+
+// ── MONTH NAV ──
+document.querySelectorAll('.mnav-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const m = this.dataset.month;
+    const sec = document.getElementById('month-' + m);
+    if (!sec) return;
+    const top = sec.getBoundingClientRect().top + window.pageYOffset - 90;
+    window.scrollTo({top, behavior:'smooth'});
+  });
+});
+
+window.addEventListener('scroll', () => {
+  let current = '3';
+  MONTHS.forEach(mo => {
+    const el = document.getElementById('month-' + mo.m);
+    if (el && el.getBoundingClientRect().top <= 100) current = String(mo.m);
+  });
+  document.querySelectorAll('.mnav-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.month === current);
+  });
+}, {passive:true});
+
+// ── MODAL ──
+function openModal(ev) {
+  const overlay = document.getElementById('overlay');
+  document.getElementById('modal-tag').textContent = CAT_LABELS[ev.cat] || 'Actividad';
+  document.getElementById('modal-tag').style.background = getComputedStyle(document.documentElement).getPropertyValue('--' + ev.cat).trim() || '#475569';
+  document.getElementById('modal-date').textContent = formatDate(ev.y, ev.m, ev.d);
+  document.getElementById('modal-title').textContent = ev.title.replace(/^[\u{1F300}-\u{1FAFF}🏖️🎒📅🔔🎓🎉🏆📚🐣\s]+/u, '').trim();
+  document.getElementById('modal-detail').innerHTML = ev.detail || '';
+  document.getElementById('modal-gcal').href = ev.gcal;
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('overlay') && !e.target.classList.contains('modal-close')) return;
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal({target: document.getElementById('overlay')});
+});
+
+function formatDate(y, m, d) {
+  const date = new Date(y, m - 1, d);
+  const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  return `${days[date.getDay()]} ${d} de ${MONTH_NAMES[m]} de ${y}`;
+}
+
+// ── BACK TO TOP ──
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('visible', window.scrollY > 300);
+}, {passive:true});
+
+// ── INIT ──
+buildCalendars();
+</script>
+</body>
+</html>
